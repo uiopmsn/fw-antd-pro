@@ -22,7 +22,7 @@ Ant Design Pro provides some useful script to help you quick start and build wit
 
 Scripts provided in `package.json`. It's safe to modify or add additional script:
 
-### Start project
+### 启动项目
 
 ```bash
 npm start
