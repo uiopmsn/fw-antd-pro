@@ -12,13 +12,13 @@ import { GithubOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
+import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 const noMatch = (
   <Result
     status="403"
     title="403"
-    subTitle="Sorry, you are not authorized to access this page."
+    subTitle="抱歉，权限不足."
     extra={
       <Button type="primary">
         <Link to="/user/login">Go Login</Link>
@@ -63,9 +63,9 @@ const defaultFooterDom = (
 );
 
 const footerRender = () => {
-  if (!isAntDesignPro()) {
+  //if (!isAntDesignPro()) {
     return defaultFooterDom;
-  }
+  //}
 
   return (
     <>
@@ -100,7 +100,6 @@ const BasicLayout = props => {
   /**
    * constructor
    */
-
   useEffect(() => {
     if (dispatch) {
       dispatch({
@@ -119,8 +118,8 @@ const BasicLayout = props => {
         payload,
       });
     }
-  }; // get children authority
-
+  };
+  // get children authority
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };

@@ -24,7 +24,6 @@ const codeMessage = {
 /**
  * 异常处理程序
  */
-
 const errorHandler = error => {
   const { response } = error;
 
@@ -44,13 +43,67 @@ const errorHandler = error => {
 
   return response;
 };
+
 /**
  * 配置request请求时的默认参数
  */
-
 const request = extend({
   errorHandler,
   // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
 });
+
+//发送请求前，header加入token
+request.interceptors.request.use(async (url, options) => {
+  const token = localStorage.getItem("user-token");
+  console.log("request-put header token: "+token);
+  const headers = {
+    'Content-Type': 'application/json',
+    //'Content-Type': 'application/x-www-form-urlencoded',
+    //'Accept': 'application/json',
+  };
+
+  if (token) {
+    headers['token'] = token;
+  }
+  return (
+    {
+      url: url,
+      options: { ...options, headers: headers },
+    }
+  );
+})
+
+//返回后的特殊处理 克隆响应对象做解析处理
+request.interceptors.response.use(async (response) => {
+  const data = await response.clone().json();
+  console.log("request-json-data: " + JSON.stringify(data));
+  if(data.code){
+    //需要登录
+    if(data.code === '0'){
+      window.g_app._store.dispatch({
+        type: 'login/logout',
+      });
+      notification.error({
+        message: '未登录或登录已过期，请重新登录。',
+      });
+      return;
+    }
+    if (data.code === '403') {
+      //router.push('/exception/403');
+      //return;
+      notification.error({
+        message: '权限不足，请联系管理员。',
+      });
+    }
+    if (data.code === '500') {
+      notification.error({
+        message: data.msg,
+      });
+    }
+  }
+
+  return response;
+});
+
 export default request;

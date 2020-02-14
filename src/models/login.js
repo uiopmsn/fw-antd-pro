@@ -16,7 +16,8 @@ const Model = {
         payload: response,
       }); // Login successfully
 
-      if (response.status === 'ok') {
+      //if (response.status === 'ok') {
+      if (response.code === '1') {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -55,8 +56,9 @@ const Model = {
   },
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, type: payload.type };
+      localStorage.setItem('user-token', payload.data.token);
+      setAuthority(payload.data.currentAuthority);
+      return { ...state, status: payload.code, type: payload.data.type };
     },
   },
 };

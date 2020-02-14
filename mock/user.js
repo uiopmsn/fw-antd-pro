@@ -79,28 +79,64 @@ export default {
     const { password, userName, type } = req.body;
 
     if (password === 'ant.design' && userName === 'admin') {
+      /*
       res.send({
         status: 'ok',
         type,
         currentAuthority: 'admin',
       });
+       */
+      res.send(
+        {
+          code: '1',
+          msg: '',
+          data: {
+            token: 'admin.token.2ijfhjf.jwijeiwfj.sjidjifs',
+            currentAuthority: 'admin',
+            type
+          },
+        }
+      );
       return;
     }
 
     if (password === 'ant.design' && userName === 'user') {
+      res.send(
+        {
+          code: '1',
+          msg: '',
+          data: {
+            token: 'user.token.2ijfhjf.jwijeiwfj.sjidjifs',
+            currentAuthority: 'user',
+            type
+          },
+        }
+      );
+      /*
       res.send({
         status: 'ok',
         type,
         currentAuthority: 'user',
       });
+       */
       return;
     }
-
+    res.send({
+      code: '500',
+      msg: '用户名或密码错误',
+      data: {
+        token: '',
+        currentAuthority: 'guest',
+        type
+      },
+    });
+    /*
     res.send({
       status: 'error',
       type,
       currentAuthority: 'guest',
     });
+     */
   },
   'POST /api/register': (req, res) => {
     res.send({
