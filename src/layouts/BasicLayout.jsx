@@ -36,6 +36,8 @@ const menuDataRender = menuList =>
     return Authorized.check(item.authority, localItem, null);
   });
 
+
+
 const defaultFooterDom = (
   <DefaultFooter
     copyright="2019 蚂蚁金服体验技术部出品"
@@ -64,9 +66,9 @@ const defaultFooterDom = (
 
 const footerRender = () => {
   //if (!isAntDesignPro()) {
-    return defaultFooterDom;
+  return defaultFooterDom;
   //}
-
+  /*
   return (
     <>
       {defaultFooterDom}
@@ -86,6 +88,7 @@ const footerRender = () => {
       </div>
     </>
   );
+   */
 };
 
 const BasicLayout = props => {
@@ -123,6 +126,7 @@ const BasicLayout = props => {
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
+  //console.log("BasicLayout-authority:"+ JSON.stringify(authorized.authority) );
   return (
     <ProLayout
       logo={logo}
