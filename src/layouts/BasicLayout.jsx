@@ -14,6 +14,7 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+
 const noMatch = (
   <Result
     status="403"
@@ -27,68 +28,32 @@ const noMatch = (
   />
 );
 
-/**
- * use Authorized check all menu item
- */
-const menuDataRender = menuList =>
-  menuList.map(item => {
-    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
-    return Authorized.check(item.authority, localItem, null);
-  });
-
-
-
-const defaultFooterDom = (
-  <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
-    links={[
-      {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
-        blankTarget: true,
-      },
-      {
-        key: 'github',
-        title: <GithubOutlined />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
-        blankTarget: true,
-      },
-    ]}
-  />
-);
-
 const footerRender = () => {
-  //if (!isAntDesignPro()) {
-  return defaultFooterDom;
-  //}
-  /*
   return (
-    <>
-      {defaultFooterDom}
-      <div
-        style={{
-          padding: '0px 24px 24px',
-          textAlign: 'center',
-        }}
-      >
-        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
-            width="82px"
-            alt="netlify logo"
-          />
-        </a>
-      </div>
-    </>
-  );
-   */
+    <DefaultFooter
+      copyright="2019 蚂蚁金服体验技术部出品"
+      links={[
+        {
+          key: 'Ant Design Pro',
+          title: 'Ant Design Pro',
+          href: 'https://pro.ant.design',
+          blankTarget: true,
+        },
+        {
+          key: 'github',
+          title: <GithubOutlined />,
+          href: 'https://github.com/ant-design/ant-design-pro',
+          blankTarget: true,
+        },
+        {
+          key: 'Ant Design',
+          title: 'Ant Design',
+          href: 'https://ant.design',
+          blankTarget: true,
+        },
+      ]}
+    />
+  )
 };
 
 const BasicLayout = props => {
@@ -99,10 +64,20 @@ const BasicLayout = props => {
     location = {
       pathname: '/',
     },
+    menuData,
   } = props;
+
   /**
    * constructor
    */
+  useEffect(() => {
+    if (dispatch) {
+      dispatch({
+        type: 'userMenu/fetchCurrentMenu',
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (dispatch) {
       dispatch({
@@ -110,10 +85,10 @@ const BasicLayout = props => {
       });
     }
   }, []);
+
   /**
    * init variables
    */
-
   const handleMenuCollapse = payload => {
     if (dispatch) {
       dispatch({
@@ -122,11 +97,12 @@ const BasicLayout = props => {
       });
     }
   };
+
   // get children authority
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
-  //console.log("BasicLayout-authority:"+ JSON.stringify(authorized.authority) );
+
   return (
     <ProLayout
       logo={logo}
@@ -161,7 +137,7 @@ const BasicLayout = props => {
         );
       }}
       footerRender={footerRender}
-      menuDataRender={menuDataRender}
+      menuDataRender={() => menuData}
       rightContentRender={() => <RightContent />}
       {...props}
       {...settings}
@@ -173,7 +149,8 @@ const BasicLayout = props => {
   );
 };
 
-export default connect(({ global, settings }) => ({
+export default connect(({ global, settings, userMenu }) => ({
   collapsed: global.collapsed,
   settings,
+  menuData: userMenu.currentMenu,
 }))(BasicLayout);
