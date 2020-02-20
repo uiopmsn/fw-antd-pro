@@ -1,6 +1,6 @@
 import { stringify } from 'querystring';
 import { router } from 'umi';
-import { fakeAccountLogin } from '@/services/login';
+import { accountLogin } from '@/services/login';
 //import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 const Model = {
@@ -10,33 +10,34 @@ const Model = {
   },
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      }); // Login successfully
+      const response = yield call(accountLogin, payload);
+      if (response.data){
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
 
-      if (response.code === 1) {
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params;
+        if (response.code === 1) {
+          const urlParams = new URL(window.location.href);
+          const params = getPageQuery();
+          let { redirect } = params;
 
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
+          if (redirect) {
+            const redirectUrlParams = new URL(redirect);
 
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
+            if (redirectUrlParams.origin === urlParams.origin) {
+              redirect = redirect.substr(urlParams.origin.length);
 
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
+              if (redirect.match(/^\/.*#/)) {
+                redirect = redirect.substr(redirect.indexOf('#') + 1);
+              }
+            } else {
+              window.location.href = '/';
+              return;
             }
-          } else {
-            window.location.href = '/';
-            return;
           }
+          router.replace(redirect || '/');
         }
-
-        router.replace(redirect || '/');
       }
     },
 
@@ -44,6 +45,7 @@ const Model = {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
 
       if (window.location.pathname !== '/user/login' && !redirect) {
+        localStorage.removeItem('user-token');
         router.replace({
           pathname: '/user/login',
           search: stringify({
@@ -55,7 +57,9 @@ const Model = {
   },
   reducers: {
     changeLoginStatus(state, { payload }) {
-      localStorage.setItem('user-token', payload.data.token);
+      if (payload.data && payload.data.token){
+        localStorage.setItem('user-token', payload.data.token);
+      }
       //setAuthority(payload.data.currentAuthority);
       return { ...state, status: payload.code, type: payload.data.type };
     },

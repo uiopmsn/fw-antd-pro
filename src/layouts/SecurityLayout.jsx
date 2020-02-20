@@ -26,9 +26,7 @@ class SecurityLayout extends React.Component {
   render() {
     const { isReady } = this.state;
     const { children, loading } = this.props;
-    // 你可以把它替换成你自己的登录认证规则（比如判断 token 是否存在）
-    // const { currentUser } = this.props;
-    //const isLogin = currentUser && currentUser.userid;
+
     const isLogin = localStorage.getItem("user-token");
 
     const queryString = stringify({
