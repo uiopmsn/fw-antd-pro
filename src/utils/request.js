@@ -72,15 +72,16 @@ request.interceptors.request.use(async (url, options) => {
       options: { ...options, headers: headers },
     }
   );
-})
+});
 
 //返回后的特殊处理 克隆响应对象做解析处理
 request.interceptors.response.use(async (response) => {
+
   const data = await response.clone().json();
   console.log("request-json-data: " + JSON.stringify(data));
-  if(data.code){
+  if(data && data.code){
     //需要登录
-    if(data.code === '0'){
+    if(data.code === 0){
       window.g_app._store.dispatch({
         type: 'login/logout',
       });
@@ -89,14 +90,14 @@ request.interceptors.response.use(async (response) => {
       });
       return;
     }
-    if (data.code === '403') {
+    if (data.code === 403) {
       //router.push('/exception/403');
       //return;
       notification.error({
         message: '权限不足，请联系管理员。',
       });
     }
-    if (data.code === '500') {
+    if (data.code === 500) {
       notification.error({
         message: data.msg,
       });

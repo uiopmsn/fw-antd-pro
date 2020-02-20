@@ -1,7 +1,7 @@
 import { stringify } from 'querystring';
 import { router } from 'umi';
 import { fakeAccountLogin } from '@/services/login';
-import { setAuthority } from '@/utils/authority';
+//import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 const Model = {
   namespace: 'login',
@@ -16,8 +16,7 @@ const Model = {
         payload: response,
       }); // Login successfully
 
-      //if (response.status === 'ok') {
-      if (response.code === '1') {
+      if (response.code === 1) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -57,7 +56,7 @@ const Model = {
   reducers: {
     changeLoginStatus(state, { payload }) {
       localStorage.setItem('user-token', payload.data.token);
-      setAuthority(payload.data.currentAuthority);
+      //setAuthority(payload.data.currentAuthority);
       return { ...state, status: payload.code, type: payload.data.type };
     },
   },

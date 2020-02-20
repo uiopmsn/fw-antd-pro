@@ -51,7 +51,7 @@ const Login = props => {
             ]}
           />
           <Password
-            name="password"
+            name="passWord"
             placeholder="密码: ant.design"
             rules={[
               {

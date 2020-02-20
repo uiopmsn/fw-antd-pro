@@ -92,8 +92,6 @@ export default {
           msg: '',
           data: {
             token: 'admin.token.2ijfhjf.jwijeiwfj.sjidjifs',
-            currentAuthority: 'admin',
-            type
           },
         }
       );

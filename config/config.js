@@ -1,7 +1,7 @@
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 
 import slash from 'slash2';
-import themePluginConfig from './themePluginConfig';
+
 const { pwa } = defaultSettings;
 
 const plugins = [
@@ -159,12 +159,14 @@ export default {
   },
   manifest: {
     basePath: '/',
-  }, // chainWebpack: webpackPlugin,
-  // proxy: {
-  //   '/server/api/': {
-  //     target: 'https://preview.pro.ant.design/',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/server': '' },
-  //   },
-  // },
+  },
+  // chainWebpack: webpackPlugin,
+   proxy: {
+     '/server/api/': {
+       target: 'http://localhost:8080/',
+       changeOrigin: true,
+       secure: false,      // 如果是https接口，需要配置这个参数为true
+       pathRewrite: { '^/server': '' },
+     },
+   },
 };
