@@ -161,12 +161,12 @@ export default {
     basePath: '/',
   },
   // chainWebpack: webpackPlugin,
-   proxy: {
-     '/server/api/': {
-       target: 'http://localhost:8080/',
-       changeOrigin: true,
-       secure: false,      // 如果是https接口，需要配置这个参数为true
-       pathRewrite: { '^/server': '' },
-     },
-   },
+  proxy: {
+    '/server/api/': {
+      target: 'http://localhost:8080/',
+      changeOrigin: true,
+      secure: false,      // 如果是https接口，需要配置这个参数为true
+      pathRewrite: { '^/server': '' },
+    },
+  },
 };
