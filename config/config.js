@@ -91,17 +91,16 @@ export default {
               component: './Welcome',
             },
             {
-              path: '/admin',
-              name: 'admin',
+              path: '/sysMange/permManage',
+              name: 'permManage',
               icon: 'crown',
               component: './Admin',
-              authority: ['admin'],
             },
             {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
+              path: '/sysMange/userManage',
+              name: 'userManage',
+              icon: 'crown',
+              component: './Admin',
             },
             {
               component: './404',

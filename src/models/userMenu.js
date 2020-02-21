@@ -13,15 +13,17 @@ const UserMenuModel = {
      */
     *fetchCurrentMenu(_, { call, put }) {
       const response = yield call(queryCurrentMenu);
-      yield put({
-        type: 'saveCurrentMenu',
-        payload: response,
-      });
+      if (response.data){
+        yield put({
+          type: 'saveCurrentMenu',
+          payload: response,
+        });
+      }
     },
   },
   reducers: {
     saveCurrentMenu(state, action) {
-      return { ...state, currentMenu: action.payload || [] };
+      return { ...state, currentMenu: action.payload.data || [] };
     },
   },
 };

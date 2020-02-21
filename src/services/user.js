@@ -10,5 +10,5 @@ export async function queryNotices() {
   return request('/api/notices');
 }
 export async function queryCurrentMenu() {
-  return request('/api/currentMenu');
+  return request('/server/api/currentMenu');
 }
