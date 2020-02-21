@@ -31,7 +31,13 @@ const noMatch = (
 const footerRender = () => {
   return (
     <DefaultFooter
-      copyright="2019 蚂蚁金服体验技术部出品"
+      copyright="2020 FunWe"
+      links = {[]}
+    />
+  )
+};
+
+      /*
       links={[
         {
           key: 'Ant Design Pro',
@@ -52,9 +58,7 @@ const footerRender = () => {
           blankTarget: true,
         },
       ]}
-    />
-  )
-};
+       */
 
 const BasicLayout = props => {
   const {

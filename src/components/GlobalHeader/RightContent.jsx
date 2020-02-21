@@ -17,6 +17,7 @@ const GlobalHeaderRight = props => {
 
   return (
     <div className={className}>
+      {/*
       <HeaderSearch
         className={`${styles.action} ${styles.search}`}
         placeholder="站内搜索"
@@ -52,8 +53,11 @@ const GlobalHeaderRight = props => {
           <QuestionCircleOutlined />
         </a>
       </Tooltip>
+       */}
       <Avatar />
+      {/*
       <SelectLang className={styles.action} />
+       */}
     </div>
   );
 };
