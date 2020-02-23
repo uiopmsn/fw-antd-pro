@@ -1,7 +1,7 @@
-import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
+//import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
 import { Alert, Checkbox } from 'antd';
 import React, { useState } from 'react';
-import { Link } from 'umi';
+//import { Link } from 'umi';
 import { connect } from 'dva';
 import styles from './style.less';
 import LoginFrom from './components/Login';
@@ -35,7 +35,7 @@ const Login = props => {
   return (
     <div className={styles.main}>
       <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
-        <Tab key="account" tab="账户密码登录">
+        <Tab key="account" tab="">
           {status === 'error' && loginType === 'account' && !submitting && (
             <LoginMessage content="账户或密码错误（admin/ant.design）" />
           )}
@@ -61,6 +61,8 @@ const Login = props => {
             ]}
           />
         </Tab>
+
+        {/*
         <Tab key="mobile" tab="手机号登录">
           {status === 'error' && loginType === 'mobile' && !submitting && (
             <LoginMessage content="验证码错误" />
@@ -93,6 +95,9 @@ const Login = props => {
             ]}
           />
         </Tab>
+        */}
+
+        {/*
         <div>
           <Checkbox checked={autoLogin} onChange={e => setAutoLogin(e.target.checked)}>
             自动登录
@@ -105,7 +110,9 @@ const Login = props => {
             忘记密码
           </a>
         </div>
+        */}
         <Submit loading={submitting}>登录</Submit>
+        {/*
         <div className={styles.other}>
           其他登录方式
           <AlipayCircleOutlined className={styles.icon} />
@@ -115,6 +122,7 @@ const Login = props => {
             注册账户
           </Link>
         </div>
+        */}
       </LoginFrom>
     </div>
   );
