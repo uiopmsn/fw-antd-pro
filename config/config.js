@@ -90,6 +90,12 @@ export default {
               component: './Welcome',
             },
             {
+              path: '/sysMange/roleManage',
+              name: 'roleManage',
+              icon: 'crown',
+              component: './roleManage',
+            },
+            {
               path: '/sysMange/permManage',
               name: 'permManage',
               icon: 'crown',
