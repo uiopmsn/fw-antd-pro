@@ -1,22 +1,23 @@
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown, Menu, message } from 'antd';
+import { PlusOutlined, StopOutlined } from '@ant-design/icons';
+import { Button, message } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { queryRule, updateRule, addRule, removeRule } from './service';
+import { queryRoleList, updateRole, addRole, stopRole } from './service';
+
 /**
  * 添加节点
  * @param fields
  */
-
 const handleAdd = async fields => {
   const hide = message.loading('正在添加');
 
   try {
-    await addRule({
-      desc: fields.desc,
+    await addRole({
+      roleCode: fields.roleCode,
+      roleName: fields.roleName,
     });
     hide();
     message.success('添加成功');
@@ -27,19 +28,19 @@ const handleAdd = async fields => {
     return false;
   }
 };
+
 /**
  * 更新节点
  * @param fields
  */
-
 const handleUpdate = async fields => {
   const hide = message.loading('正在配置');
 
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
+    await updateRole({
       key: fields.key,
+      roleCode: fields.roleCode,
+      roleName: fields.roleName,
     });
     hide();
     message.success('配置成功');
@@ -50,30 +51,30 @@ const handleUpdate = async fields => {
     return false;
   }
 };
+
 /**
- *  删除节点
+ *  停用节点
  * @param selectedRows
  */
-
 const handleRemove = async selectedRows => {
-  const hide = message.loading('正在删除');
+  const hide = message.loading('正在停用');
   if (!selectedRows) return true;
 
   try {
-    await removeRule({
-      key: selectedRows.map(row => row.key),
+    await stopRole({
+      id: selectedRows.map(row => row.id),
     });
     hide();
-    message.success('删除成功，即将刷新');
+    message.success('停用成功，即将刷新');
     return true;
   } catch (error) {
     hide();
-    message.error('删除失败，请重试');
+    message.error('停用失败，请重试');
     return false;
   }
 };
 
-const TableList = () => {
+const roleManage = () => {
   const [sorter, setSorter] = useState({});
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
@@ -82,43 +83,29 @@ const TableList = () => {
 
   const columns = [
     {
-      title: '规则名称',
-      dataIndex: 'name',
+      title: '角色编码',
+      dataIndex: 'roleCode',
     },
     {
-      title: '描述',
-      dataIndex: 'desc',
-    },
-    {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      sorter: true,
-      renderText: val => `${val} 万`,
+      title: '角色描述',
+      dataIndex: 'roleName',
     },
     {
       title: '状态',
       dataIndex: 'status',
       valueEnum: {
         0: {
-          text: '关闭',
+          text: '已停用',
           status: 'Default',
         },
         1: {
-          text: '运行中',
-          status: 'Processing',
-        },
-        2: {
-          text: '已上线',
+          text: '使用中',
           status: 'Success',
-        },
-        3: {
-          text: '异常',
-          status: 'Error',
         },
       },
     },
     {
-      title: '上次调度时间',
+      title: '最后修改时间',
       dataIndex: 'updatedAt',
       sorter: true,
       valueType: 'dateTime',
@@ -135,10 +122,8 @@ const TableList = () => {
               setStepFormValues(record);
             }}
           >
-            配置
+            权限配置
           </a>
-          <Divider type="vertical" />
-          <a href="">订阅警报</a>
         </>
       ),
     },
@@ -147,9 +132,9 @@ const TableList = () => {
   return (
     <PageHeaderWrapper>
       <ProTable
-        headerTitle="查询表格"
+        headerTitle="角色列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         onChange={(_, _filter, _sorter) => {
           setSorter(`${_sorter.field}_${_sorter.order}`);
         }}
@@ -161,45 +146,21 @@ const TableList = () => {
             <PlusOutlined /> 新建
           </Button>,
           selectedRows && selectedRows.length > 0 && (
-            <Dropdown
-              overlay={
-                <Menu
-                  onClick={async e => {
-                    if (e.key === 'remove') {
-                      await handleRemove(selectedRows);
-                      action.reload();
-                    }
-                  }}
-                  selectedKeys={[]}
-                >
-                  <Menu.Item key="remove">批量删除</Menu.Item>
-                  <Menu.Item key="approval">批量审批</Menu.Item>
-                </Menu>
-              }
+            <Button type="danger"
+                    onClick={async e => {
+                      if (e.key === 'remove') {
+                        await handleRemove(selectedRows);
+                        action.reload();
+                      }
+                    }}
+                    selectedKeys={[]}
             >
-              <Button>
-                批量操作 <DownOutlined />
-              </Button>
-            </Dropdown>
+              <StopOutlined /> 批量停用
+            </Button>
           ),
         ]}
-        tableAlertRender={(selectedRowKeys, selectedRows) => (
-          <div>
-            已选择{' '}
-            <a
-              style={{
-                fontWeight: 600,
-              }}
-            >
-              {selectedRowKeys.length}
-            </a>{' '}
-            项&nbsp;&nbsp;
-            <span>
-              服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万
-            </span>
-          </div>
-        )}
-        request={params => queryRule(params)}
+
+        request={params => queryRoleList(params)}
         columns={columns}
         rowSelection={{}}
       />
@@ -244,4 +205,4 @@ const TableList = () => {
   );
 };
 
-export default TableList;
+export default roleManage;

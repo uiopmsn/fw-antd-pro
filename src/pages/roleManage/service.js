@@ -1,23 +1,23 @@
 import request from '@/utils/request';
-export async function queryRule(params) {
-  return request('/api/rule', {
+export async function queryRoleList(params) {
+  return request('/api/roleList', {
     params,
   });
 }
-export async function removeRule(params) {
-  return request('/api/rule', {
+export async function stopRole(params) {
+  return request('/api/role', {
     method: 'POST',
     data: { ...params, method: 'delete' },
   });
 }
-export async function addRule(params) {
-  return request('/api/rule', {
+export async function addRole(params) {
+  return request('/api/role', {
     method: 'POST',
     data: { ...params, method: 'post' },
   });
 }
-export async function updateRule(params) {
-  return request('/api/rule', {
+export async function updateRole(params) {
+  return request('/api/role', {
     method: 'POST',
     data: { ...params, method: 'update' },
   });

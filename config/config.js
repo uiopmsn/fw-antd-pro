@@ -105,7 +105,7 @@ export default {
               path: '/sysMange/userManage',
               name: 'userManage',
               icon: 'crown',
-              component: './Admin',
+              component: './ListTableList',
             },
             {
               component: './404',
