@@ -8,8 +8,10 @@ const namespace = 'perm';
 
 const mapStateToProps = (state) => {
   const treeData = state[namespace].treeData;
+  const treeSelectData = state[namespace].treeSelectData;
   return {
     treeData,
+    treeSelectData,
   };
 };
 
@@ -32,12 +34,12 @@ export default class PermTree extends React.Component {
   state = {
     expandedKeys: [],
     autoExpandParent: true,
-    checkedKeys: [],
+    checkedKeys: this.props.initSelect,
     selectedKeys: [],
   };
 
   onExpand = expandedKeys => {
-    console.log('onExpand', expandedKeys);
+    //console.log('onExpand', expandedKeys);
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
     // or, you can remove all expanded children keys.
     this.setState({
@@ -47,14 +49,14 @@ export default class PermTree extends React.Component {
   };
 
   onCheck = checkedKeys => {
-    console.log('onCheck', checkedKeys);
+    //console.log('onCheck', checkedKeys);
     const { onChecked } = this.props;
     onChecked({checkedKeys});
     this.setState({ checkedKeys });
   };
 
   onSelect = (selectedKeys, info) => {
-    console.log('onSelect', info);
+    //console.log('onSelect', info);
     this.setState({ selectedKeys });
   };
 

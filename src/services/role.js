@@ -22,3 +22,9 @@ export async function updateRole(params) {
     data: { ...params, method: 'update' },
   });
 }
+
+export async function getPermByRole(params) {
+  return request('/api/getPermByRole', {
+    params,
+  });
+}

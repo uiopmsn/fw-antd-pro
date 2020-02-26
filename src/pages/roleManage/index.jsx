@@ -5,7 +5,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { queryRoleList, updateRole, addRole, stopRole } from './service';
+import { queryRoleList, updateRole, addRole, stopRole, getPermByRole } from '../../services/role';
 
 /**
  * 添加节点
@@ -79,7 +79,28 @@ const roleManage = () => {
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [stepFormValues, setStepFormValues] = useState({});
+  const [treeSelectValues, setTreeSelectValues] = useState([]);
   const actionRef = useRef();
+
+  const getRolePerm = async fields => {
+    const hide = message.loading('正在加载角色权限');
+    try {
+      const res = await getPermByRole({
+        roleId: fields.id,
+      });
+      hide();
+      if (res && res.code === 1){
+        return res.data;
+      }else {
+        return [];
+      }
+
+    } catch (error) {
+      hide();
+      return [];
+      message.error('加载角色权限失败！');
+    }
+  };
 
   const columns = [
     {
@@ -120,6 +141,7 @@ const roleManage = () => {
             onClick={() => {
               handleUpdateModalVisible(true);
               setStepFormValues(record);
+              getRolePerm(record).then(t => setTreeSelectValues(t));
             }}
           >
             权限配置
@@ -199,6 +221,7 @@ const roleManage = () => {
           }}
           updateModalVisible={updateModalVisible}
           values={stepFormValues}
+          perms={treeSelectValues}
         />
       ) : null}
     </PageHeaderWrapper>

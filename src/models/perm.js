@@ -4,6 +4,10 @@ export default {
   namespace: 'perm',
   state:{
     treeData: [],
+    treeSelectData: [
+      "/systemMange",
+      "0-2",
+    ],
   },
 
   effects:{
@@ -23,6 +27,7 @@ export default {
   reducers: {
     save(state, { payload: data }){
       return {
+        ...state,
         treeData: data,
       };
     }

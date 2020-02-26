@@ -28,6 +28,7 @@ const UpdateForm = props => {
     onCancel: handleUpdateModalVisible,
     updateModalVisible,
     values,
+    perms,
   } = props;
 
   const forward = () => setCurrentStep(currentStep + 1);
@@ -60,6 +61,7 @@ const UpdateForm = props => {
         <>
           <PermTree
             onChecked = {saveTreeData}
+            initSelect = {perms}
           />
         </>
       );
