@@ -51,9 +51,13 @@ export default {
     code: 1,
     msg: "",
     data: [
-      "/systemMange",
       "0-2",
-    ],
+      "/systemMange/roleMange",
+      "0-0-0-0",
+      "0-0-0-1",
+      "0-0-0-2"
+    ]
+      ,
   }
 
 }

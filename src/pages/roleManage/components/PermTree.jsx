@@ -49,6 +49,10 @@ export default class PermTree extends React.Component {
     this.props.onDidMount();
   }
 
+  componentDidUpdate() {
+    this.props.onChecked(this.props.treeCheckedData);
+  }
+
   state = {
     expandedKeys: [],
     autoExpandParent: true,
@@ -57,9 +61,6 @@ export default class PermTree extends React.Component {
   };
 
   onExpand = expandedKeys => {
-    //console.log('onExpand', expandedKeys);
-    // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    // or, you can remove all expanded children keys.
     this.setState({
       expandedKeys,
       autoExpandParent: false,
@@ -67,10 +68,8 @@ export default class PermTree extends React.Component {
   };
 
   onCheck = checkedKeys => {
-    this.props.onChecked(checkedKeys);
-    console.log("checkedKeys: " , checkedKeys);
+    //this.props.onChecked(checkedKeys);
     this.props.changeChecked(checkedKeys);
-    //this.setState({ checkedKeys });
   };
 
   onSelect = (selectedKeys, info) => {

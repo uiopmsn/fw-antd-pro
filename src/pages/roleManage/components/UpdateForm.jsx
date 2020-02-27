@@ -15,26 +15,6 @@ const formLayout = {
   },
 };
 
-/*
-const getRolePerm = async roleId => {
-  const hide = message.loading('正在加载角色权限');
-  try {
-    const res = await getPermByRole({
-      roleId: roleId,
-    });
-    hide();
-    if (res && res.code === 1){
-      return res.data;
-    }else {
-      return [];
-    }
-  } catch (error) {
-    hide();
-    return [];
-  }
-};
-*/
-
 const UpdateForm = props => {
   const [formVals, setFormVals] = useState({
     id: props.values.id,
