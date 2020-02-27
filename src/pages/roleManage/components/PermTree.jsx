@@ -7,11 +7,11 @@ const { TreeNode } = Tree;
 const namespace = 'perm';
 
 const mapStateToProps = (state) => {
-  const treeData = state[namespace].treeData;
-  const treeSelectData = state[namespace].treeSelectData;
+  const treeData = state[namespace].allPerm;
+  const treeCheckedData = state[namespace].rolePerm;
   return {
     treeData,
-    treeSelectData,
+    treeCheckedData,
   };
 };
 
@@ -19,14 +19,32 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onDidMount: () => {
       dispatch({
-        type: `${namespace}/queryTreeData`,
+        type: `${namespace}/queryAllPerm`,
       });
     },
+    initChecked: (roleId) => {
+      dispatch({
+        type: namespace+'/queryRolePerm',
+        payload: roleId,
+      })
+    },
+    changeChecked: (checkedKeys) => {
+      dispatch({
+        type: namespace+'/saveRolePerm',
+        payload: checkedKeys,
+      })
+    }
   };
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class PermTree extends React.Component {
+
+  constructor(props){
+    super(props);
+    props.initChecked(props.roleId);
+  }
+
   componentDidMount() {
     this.props.onDidMount();
   }
@@ -34,7 +52,7 @@ export default class PermTree extends React.Component {
   state = {
     expandedKeys: [],
     autoExpandParent: true,
-    checkedKeys: this.props.initSelect,
+    //checkedKeys: [],
     selectedKeys: [],
   };
 
@@ -49,14 +67,13 @@ export default class PermTree extends React.Component {
   };
 
   onCheck = checkedKeys => {
-    //console.log('onCheck', checkedKeys);
-    const { onChecked } = this.props;
-    onChecked({checkedKeys});
-    this.setState({ checkedKeys });
+    this.props.onChecked(checkedKeys);
+    console.log("checkedKeys: " , checkedKeys);
+    this.props.changeChecked(checkedKeys);
+    //this.setState({ checkedKeys });
   };
 
   onSelect = (selectedKeys, info) => {
-    //console.log('onSelect', info);
     this.setState({ selectedKeys });
   };
 
@@ -80,7 +97,7 @@ export default class PermTree extends React.Component {
         expandedKeys={this.state.expandedKeys}
         autoExpandParent={this.state.autoExpandParent}
         onCheck={this.onCheck}
-        checkedKeys={this.state.checkedKeys}
+        checkedKeys={this.props.treeCheckedData}
         onSelect={this.onSelect}
         selectedKeys={this.state.selectedKeys}
       >

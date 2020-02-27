@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Input, Modal, Steps, message } from 'antd';
 import PermTree from './PermTree';
+import {getPermByRole} from "@/services/role";
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -13,6 +14,26 @@ const formLayout = {
     span: 16,
   },
 };
+
+/*
+const getRolePerm = async roleId => {
+  const hide = message.loading('正在加载角色权限');
+  try {
+    const res = await getPermByRole({
+      roleId: roleId,
+    });
+    hide();
+    if (res && res.code === 1){
+      return res.data;
+    }else {
+      return [];
+    }
+  } catch (error) {
+    hide();
+    return [];
+  }
+};
+*/
 
 const UpdateForm = props => {
   const [formVals, setFormVals] = useState({
@@ -28,7 +49,6 @@ const UpdateForm = props => {
     onCancel: handleUpdateModalVisible,
     updateModalVisible,
     values,
-    perms,
   } = props;
 
   const forward = () => setCurrentStep(currentStep + 1);
@@ -36,7 +56,7 @@ const UpdateForm = props => {
   const backward = () => setCurrentStep(currentStep - 1);
 
   const saveTreeData = (value) => {
-    formVals.perms = value.checkedKeys;
+    formVals.perms = value;
   };
 
   const handleNext = async () => {
@@ -61,7 +81,7 @@ const UpdateForm = props => {
         <>
           <PermTree
             onChecked = {saveTreeData}
-            initSelect = {perms}
+            roleId = {formVals.id}
           />
         </>
       );

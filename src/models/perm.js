@@ -1,36 +1,47 @@
-import { queryAllPerm } from '@/services/perm';
+import { queryAllPerm, queryRolePerm } from '@/services/perm';
 
 export default {
   namespace: 'perm',
   state:{
-    treeData: [],
-    treeSelectData: [
-      "/systemMange",
-      "0-2",
-    ],
+    allPerm: [],
+    rolePerm: [],
   },
 
   effects:{
-    *queryTreeData(_, sagaEffects){
+    *queryAllPerm(_, sagaEffects){
       const { call, put } = sagaEffects;
       const response = yield call(queryAllPerm);
       if (response && response.code){
         if (response.code === 1){
-          yield put({ type: 'save', payload: response.data });
+          yield put({ type: 'saveAllPerm', payload: response.data });
         }
-
       }
+    },
 
+    *queryRolePerm({ payload }, { call, put } ){
+      const response = yield call(queryRolePerm, payload);
+      if (response && response.code){
+        if (response.code === 1){
+          yield put({ type: 'saveRolePerm', payload: response.data });
+        }
+      }
     },
   },
 
   reducers: {
-    save(state, { payload: data }){
+    saveAllPerm(state, { payload: data }){
       return {
         ...state,
-        treeData: data,
+        allPerm: data,
       };
-    }
+    },
+    saveRolePerm(state, { payload: data }){
+      console.log("perm model,payload: ", data);
+      return {
+        ...state,
+        rolePerm: data,
+      };
+    },
   },
 
 

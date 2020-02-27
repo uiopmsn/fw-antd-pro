@@ -45,6 +45,15 @@ export default {
           key: '0-2',
       },
     ]
+  },
+
+  'GET /api/getPermByRole': {
+    code: 1,
+    msg: "",
+    data: [
+      "/systemMange",
+      "0-2",
+    ],
   }
 
 }
