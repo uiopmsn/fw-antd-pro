@@ -37,14 +37,16 @@ const handleUpdate = async fields => {
   const hide = message.loading('正在配置');
 
   try {
-    await updateRole({
+    const res = await updateRole({
       key: fields.key,
       roleCode: fields.roleCode,
       roleName: fields.roleName,
     });
     hide();
-    message.success('配置成功');
-    return true;
+    if (res.code === 1){
+      message.success('配置成功');
+      return true;
+    }
   } catch (error) {
     hide();
     message.error('配置失败请重试！');
@@ -61,12 +63,14 @@ const handleRemove = async selectedRows => {
   if (!selectedRows) return true;
 
   try {
-    await stopRole({
+    const res = await stopRole({
       id: selectedRows.map(row => row.id),
     });
     hide();
-    message.success('停用成功，即将刷新');
-    return true;
+    if (res.code === 1){
+      message.success('停用成功，即将刷新');
+      return true;
+    }
   } catch (error) {
     hide();
     message.error('停用失败，请重试');
@@ -108,7 +112,7 @@ const roleManage = () => {
       title: '最后修改时间',
       dataIndex: 'updatedAt',
       sorter: true,
-      valueType: 'dateTime',
+      valueType: 'date',
     },
     {
       title: '操作',
@@ -148,10 +152,8 @@ const roleManage = () => {
           selectedRows && selectedRows.length > 0 && (
             <Button type="danger"
                     onClick={async e => {
-                      if (e.key === 'remove') {
-                        await handleRemove(selectedRows);
-                        action.reload();
-                      }
+                      await handleRemove(selectedRows);
+                      action.reload();
                     }}
                     selectedKeys={[]}
             >

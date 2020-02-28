@@ -56,7 +56,8 @@ const request = extend({
 //发送请求前，header加入token
 request.interceptors.request.use(async (url, options) => {
   const token = localStorage.getItem("user-token");
-  console.log("request.js-url: " + url);
+  console.log("request.js-url: " , url);
+  console.log("request.js-options: ", options);
   //console.log("request-put header token: "+token);
   const headers = {
     'Content-Type': 'application/json',
@@ -97,11 +98,13 @@ request.interceptors.response.use(async (response) => {
       notification.error({
         message: '权限不足，请联系管理员。',
       });
+      return;
     }
     if (data.code === 500) {
       notification.error({
         message: data.msg,
       });
+      return;
     }
   }
 
