@@ -5,7 +5,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { queryRoleList, updateRole, addRole, stopRole, getPermByRole } from '../../services/role';
+import { queryRoleList, updateRole, addRole, stopRole, resetRole } from '../../services/role';
 
 /**
  * 添加节点
@@ -38,9 +38,10 @@ const handleUpdate = async fields => {
 
   try {
     const res = await updateRole({
-      key: fields.key,
+      id: fields.id,
       roleCode: fields.roleCode,
       roleName: fields.roleName,
+      perms: fields.perms,
     });
     hide();
     if (res.code === 1){
@@ -58,13 +59,13 @@ const handleUpdate = async fields => {
  *  停用节点
  * @param selectedRows
  */
-const handleRemove = async selectedRows => {
+const handleStop = async selectedRows => {
   const hide = message.loading('正在停用');
   if (!selectedRows) return true;
 
   try {
     const res = await stopRole({
-      id: selectedRows.map(row => row.id),
+      ids: selectedRows.map(row => row.id),
     });
     hide();
     if (res.code === 1){
@@ -74,6 +75,26 @@ const handleRemove = async selectedRows => {
   } catch (error) {
     hide();
     message.error('停用失败，请重试');
+    return false;
+  }
+};
+
+const handleReset = async selectedRows => {
+  const hide = message.loading('正在启用');
+  if (!selectedRows) return true;
+
+  try {
+    const res = await resetRole({
+      ids: selectedRows.map(row => row.id),
+    });
+    hide();
+    if (res.code === 1){
+      message.success('启用成功，即将刷新');
+      return true;
+    }
+  } catch (error) {
+    hide();
+    message.error('启用失败，请重试');
     return false;
   }
 };
@@ -152,12 +173,21 @@ const roleManage = () => {
           selectedRows && selectedRows.length > 0 && (
             <Button type="danger"
                     onClick={async e => {
-                      await handleRemove(selectedRows);
+                      await handleStop(selectedRows);
                       action.reload();
                     }}
                     selectedKeys={[]}
             >
               <StopOutlined /> 批量停用
+            </Button>
+          ),
+          selectedRows && selectedRows.length > 0 && (
+            <Button onClick={async e => {
+                      await handleReset(selectedRows);
+                      action.reload();
+                    }}
+                    selectedKeys={[]}
+            > 批量恢复
             </Button>
           ),
         ]}

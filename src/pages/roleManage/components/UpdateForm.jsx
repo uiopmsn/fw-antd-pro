@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button, Input, Modal, Steps, message } from 'antd';
 import PermTree from './PermTree';
-import {getPermByRole} from "@/services/role";
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -42,15 +41,11 @@ const UpdateForm = props => {
   const handleNext = async () => {
     const fieldsValue = await form.validateFields();
     setFormVals({ ...formVals, ...fieldsValue });
-    if (currentStep === 1){
-      //formVals.perms = [1,2,3];
-      //message.success(JSON.stringify(formVals) );
-    }
 
     if (currentStep < 1) {
       forward();
     } else {
-      message.success(JSON.stringify(formVals) );
+      //message.success(JSON.stringify(formVals) );
       handleUpdate(formVals);
     }
   };

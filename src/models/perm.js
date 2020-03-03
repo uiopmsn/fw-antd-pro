@@ -18,8 +18,8 @@ export default {
       }
     },
 
-    *queryRolePerm({ payload }, { call, put } ){
-      const response = yield call(queryRolePerm, payload);
+    *queryRolePerm({ payload: roleId }, { call, put } ){
+      const response = yield call(queryRolePerm, roleId);
       if (response && response.code){
         if (response.code === 1){
           yield put({ type: 'saveRolePerm', payload: response.data });
@@ -36,7 +36,7 @@ export default {
       };
     },
     saveRolePerm(state, { payload: data }){
-      console.log("perm model,payload: ", data);
+      //console.log("perm model,payload: ", data);
       return {
         ...state,
         rolePerm: data,

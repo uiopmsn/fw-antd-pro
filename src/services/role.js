@@ -18,15 +18,17 @@ export async function stopRole(params) {
   });
 }
 
-export async function updateRole(params) {
-  return request('/api/role', {
+export async function resetRole(params) {
+  return request('/server/api/role/reset', {
     method: 'POST',
-    data: { ...params, method: 'update' },
+    data: params,
   });
 }
 
-export async function getPermByRole(params) {
-  return request('/api/getPermByRole', {
-    params,
+export async function updateRole(params) {
+  return request('/server/api/role/update', {
+    method: 'POST',
+    data: params,
   });
 }
+

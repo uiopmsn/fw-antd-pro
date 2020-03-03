@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch) => {
     initChecked: (roleId) => {
       dispatch({
         type: namespace+'/queryRolePerm',
-        payload: roleId,
+        payload: {roleId: roleId},
       })
     },
     changeChecked: (checkedKeys) => {
