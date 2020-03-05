@@ -1,11 +1,11 @@
-import { PlusOutlined, StopOutlined } from '@ant-design/icons';
-import { Button, message } from 'antd';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Divider, Dropdown, Menu, message } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { queryRoleList, updateRole, addRole, stopRole, resetRole } from '../../services/role';
+import { queryUsers, updateUser, addUser, stopUsers, resetUsers } from '../../services/user';
 
 /**
  * 添加节点
@@ -15,13 +15,15 @@ const handleAdd = async fields => {
   const hide = message.loading('正在添加');
 
   try {
-    await addRole({
-      roleCode: fields.roleCode,
-      roleName: fields.roleName,
+    const res = await addUser({
+      userName: fields.userName,
+      userDesc: fields.userDesc,
     });
     hide();
-    message.success('添加成功');
-    return true;
+    if (res.code === 1) {
+      message.success('添加成功');
+      return true;
+    }
   } catch (error) {
     hide();
     message.error('添加失败请重试！');
@@ -37,14 +39,13 @@ const handleUpdate = async fields => {
   const hide = message.loading('正在配置');
 
   try {
-    const res = await updateRole({
-      id: fields.id,
-      roleCode: fields.roleCode,
-      roleName: fields.roleName,
-      perms: fields.perms,
+    const res = await updateUser({
+      name: fields.name,
+      desc: fields.desc,
+      key: fields.key,
     });
     hide();
-    if (res.code === 1){
+    if (res.code === 1) {
       message.success('配置成功');
       return true;
     }
@@ -64,8 +65,8 @@ const handleStop = async selectedRows => {
   if (!selectedRows) return true;
 
   try {
-    const res = await stopRole({
-      ids: selectedRows.map(row => row.id),
+    const res = await stopUsers({
+      ids: selectedRows.map(row => row.userName),
     });
     hide();
     if (res.code === 1){
@@ -89,8 +90,8 @@ const handleReset = async selectedRows => {
   if (!selectedRows) return true;
 
   try {
-    const res = await resetRole({
-      ids: selectedRows.map(row => row.id),
+    const res = await resetUsers({
+      ids: selectedRows.map(row => row.userName),
     });
     hide();
     if (res.code === 1){
@@ -104,41 +105,36 @@ const handleReset = async selectedRows => {
   }
 };
 
-const roleManage = () => {
+const TableList = () => {
   const [sorter, setSorter] = useState({});
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef();
-
   const columns = [
     {
-      title: '角色编码',
-      dataIndex: 'roleCode',
+      title: '用户名',
+      dataIndex: 'userName',
+      sorter: true,
     },
     {
-      title: '角色描述',
-      dataIndex: 'roleName',
+      title: '描述',
+      dataIndex: 'userDesc',
+      sorter: true,
     },
     {
       title: '状态',
       dataIndex: 'status',
       valueEnum: {
         0: {
-          text: '已停用',
+          text: '停用',
           status: 'Default',
         },
         1: {
-          text: '使用中',
-          status: 'Success',
+          text: '启用',
+          status: 'Processing',
         },
       },
-    },
-    {
-      title: '最后修改时间',
-      dataIndex: 'updatedAt',
-      sorter: true,
-      valueType: 'date',
     },
     {
       title: '操作',
@@ -152,19 +148,20 @@ const roleManage = () => {
               setStepFormValues(record);
             }}
           >
-            权限配置
+            配置
           </a>
+          <Divider type="vertical" />
+          <a href="">重置密码</a>
         </>
       ),
     },
   ];
-
   return (
     <PageHeaderWrapper>
       <ProTable
-        headerTitle="角色列表"
+        headerTitle="用户列表"
         actionRef={actionRef}
-        rowKey="id"
+        rowKey="userName"
         onChange={(_, _filter, _sorter) => {
           setSorter(`${_sorter.field}_${_sorter.order}`);
         }}
@@ -176,28 +173,33 @@ const roleManage = () => {
             <PlusOutlined /> 新建
           </Button>,
           selectedRows && selectedRows.length > 0 && (
-            <Button type="danger"
-                    onClick={async e => {
+            <Dropdown
+              overlay={
+                <Menu
+                  onClick={async e => {
+                    if (e.key === 'stop') {
                       await handleStop(selectedRows);
                       action.reload();
-                    }}
-                    selectedKeys={[]}
-            >
-              <StopOutlined /> 批量停用
-            </Button>
-          ),
-          selectedRows && selectedRows.length > 0 && (
-            <Button onClick={async e => {
+                    }
+                    if (e.key === 'reset') {
                       await handleReset(selectedRows);
                       action.reload();
-                    }}
-                    selectedKeys={[]}
-            > 批量恢复
-            </Button>
+                    }
+                  }}
+                  selectedKeys={[]}
+                >
+                  <Menu.Item key="stop">批量停用</Menu.Item>
+                  <Menu.Item key="reset">批量启用</Menu.Item>
+                </Menu>
+              }
+            >
+              <Button>
+                批量操作 <DownOutlined />
+              </Button>
+            </Dropdown>
           ),
         ]}
-
-        request={params => queryRoleList(params)}
+        request={params => queryUsers(params)}
         columns={columns}
         rowSelection={{}}
       />
@@ -242,4 +244,4 @@ const roleManage = () => {
   );
 };
 
-export default roleManage;
+export default TableList;

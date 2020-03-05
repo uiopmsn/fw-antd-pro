@@ -99,13 +99,13 @@ export default {
               path: '/sysMange/permManage',
               name: 'permManage',
               icon: 'crown',
-              component: './Admin',
+              component: './ListTableList',
             },
             {
               path: '/sysMange/userManage',
               name: 'userManage',
               icon: 'crown',
-              component: './ListTableList',
+              component: './userManage',
             },
             {
               component: './404',
