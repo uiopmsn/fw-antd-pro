@@ -159,6 +159,7 @@ const UserList = () => {
     {
       title: '角色',
       dataIndex: 'userRole',
+      hideInSearch: true,
       render: (userRole) => (
         <>
           <span>
@@ -170,7 +171,6 @@ const UserList = () => {
               </Tag>
             ))}
           </span>
-
         </>
       ),
     },
