@@ -32,3 +32,8 @@ export async function updateRole(params) {
   });
 }
 
+export async function getAllUsedRoles() {
+  return request('/server/api/role/getAllUsedRoles');
+}
+
+

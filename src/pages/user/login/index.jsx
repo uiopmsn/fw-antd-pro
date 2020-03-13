@@ -1,11 +1,10 @@
 //import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
-import { Alert, Checkbox } from 'antd';
+import { Alert } from 'antd';
 import React, { useState } from 'react';
-//import { Link } from 'umi';
 import { connect } from 'dva';
 import styles from './style.less';
 import LoginFrom from './components/Login';
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginFrom;
+const { Tab, UserName, Password, Submit } = LoginFrom;
 
 const LoginMessage = ({ content }) => (
   <Alert
@@ -21,7 +20,7 @@ const LoginMessage = ({ content }) => (
 const Login = props => {
   const { userLogin = {}, submitting } = props;
   const { status, type: loginType } = userLogin;
-  const [autoLogin, setAutoLogin] = useState(true);
+  //const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState('account');
 
   const handleSubmit = values => {
@@ -42,7 +41,7 @@ const Login = props => {
 
           <UserName
             name="userName"
-            placeholder="用户名: admin or user"
+            placeholder="用户名"
             rules={[
               {
                 required: true,
@@ -52,7 +51,7 @@ const Login = props => {
           />
           <Password
             name="passWord"
-            placeholder="密码: ant.design"
+            placeholder="密码"
             rules={[
               {
                 required: true,

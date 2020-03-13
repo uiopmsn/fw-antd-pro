@@ -1,11 +1,12 @@
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown, Menu, message } from 'antd';
-import React, { useState, useRef } from 'react';
+import { Button, Divider, Dropdown, Menu, message, Tag, Popconfirm } from 'antd';
+import React, {useState, useRef, useEffect} from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { queryUsers, updateUser, addUser, stopUsers, resetUsers } from '../../services/user';
+import { queryUsers, updateUser, addUser, stopUsers, resetUsers, resetPw } from '@/services/user';
+import { getAllUsedRoles } from '@/services/role';
 
 /**
  * 添加节点
@@ -40,9 +41,9 @@ const handleUpdate = async fields => {
 
   try {
     const res = await updateUser({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
+      userName: fields.userName,
+      userDesc: fields.userDesc,
+      userRole: fields.userRole,
     });
     hide();
     if (res.code === 1) {
@@ -105,12 +106,45 @@ const handleReset = async selectedRows => {
   }
 };
 
-const TableList = () => {
+/**
+ * 获取所有角色
+ * @returns {Promise<Array|*>}
+ */
+const getAllRole = async () => {
+  try {
+    const res = await getAllUsedRoles();
+    if (res.code === 1){
+      return res.data;
+    }
+  } catch (error) {
+    message.error('获取角色数据失败，请重试');
+    return [];
+  }
+};
+
+const UserList = () => {
+  const [allRole, setAllRole] = useState([]);
   const [sorter, setSorter] = useState({});
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [formValues, setFormValues] = useState({});
   const actionRef = useRef();
+
+  useEffect(()=>{
+    getAllRole().then(value => setAllRole(value));
+  }, []);
+
+  const getRoleValue= (roleKey) => {
+    const obj = allRole.find(item => {
+      return item.key === roleKey;
+    });
+    if (obj !== undefined){
+      return obj.value;
+    }else{
+      return "";
+    }
+  };
+
   const columns = [
     {
       title: '用户名',
@@ -121,6 +155,24 @@ const TableList = () => {
       title: '描述',
       dataIndex: 'userDesc',
       sorter: true,
+    },
+    {
+      title: '角色',
+      dataIndex: 'userRole',
+      render: (userRole) => (
+        <>
+          <span>
+            {userRole.map(tag => (
+              <Tag color="blue" key={tag}>
+                {
+                  getRoleValue(tag)
+                }
+              </Tag>
+            ))}
+          </span>
+
+        </>
+      ),
     },
     {
       title: '状态',
@@ -143,19 +195,47 @@ const TableList = () => {
       render: (_, record) => (
         <>
           <a
-            onClick={() => {
+            onClick={ () => {
               handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              setFormValues(record);
             }}
           >
             配置
           </a>
           <Divider type="vertical" />
-          <a href="">重置密码</a>
+          <Popconfirm
+            title="将该用户密码重置为123456?"
+            onConfirm={confirmResetPassword}
+            onCancel={()=>{}}
+            okText="确定"
+            cancelText="取消"
+          >
+            <a onClick={ () => setFormValues(record) }>
+              重置密码
+            </a>
+          </Popconfirm>
+
         </>
       ),
     },
   ];
+
+  const confirmResetPassword = async () => {
+    const hide = message.loading('正在重置用户密码');
+    try {
+      const res = await resetPw({
+        userName: formValues.userName,
+      });
+      hide();
+      if (res.code === 1) {
+        message.success('重置成功');
+      }
+    } catch (error) {
+      hide();
+      message.error('重置失败请重试！');
+    }
+  };
+
   return (
     <PageHeaderWrapper>
       <ProTable
@@ -218,14 +298,14 @@ const TableList = () => {
         onCancel={() => handleModalVisible(false)}
         modalVisible={createModalVisible}
       />
-      {stepFormValues && Object.keys(stepFormValues).length ? (
+      {formValues && Object.keys(formValues).length ? (
         <UpdateForm
           onSubmit={async value => {
             const success = await handleUpdate(value);
 
             if (success) {
               handleModalVisible(false);
-              setStepFormValues({});
+              setFormValues({});
 
               if (actionRef.current) {
                 actionRef.current.reload();
@@ -234,14 +314,15 @@ const TableList = () => {
           }}
           onCancel={() => {
             handleUpdateModalVisible(false);
-            setStepFormValues({});
+            setFormValues({});
           }}
           updateModalVisible={updateModalVisible}
-          values={stepFormValues}
+          values={formValues}
+          allRole={allRole}
         />
       ) : null}
     </PageHeaderWrapper>
   );
 };
 
-export default TableList;
+export default UserList;

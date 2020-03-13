@@ -34,11 +34,18 @@ export async function stopUsers(params) {
 export async function addUser(params) {
   return request('/server/api/user/add', {
     method: 'POST',
-    data: { ...params, method: 'post' },
+    data: params,
   });
 }
 export async function updateUser(params) {
-  return request('/api/rule', {
+  return request('/server/api/user/update', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export async function resetPw(params) {
+  return request('/server/api/user/resetPw', {
     method: 'POST',
     data: params,
   });

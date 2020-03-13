@@ -5,7 +5,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
-import { queryRoleList, updateRole, addRole, stopRole, resetRole } from '../../services/role';
+import { queryRoleList, updateRole, addRole, stopRole, resetRole } from '@/services/role';
 
 /**
  * 添加节点
@@ -177,7 +177,7 @@ const roleManage = () => {
           </Button>,
           selectedRows && selectedRows.length > 0 && (
             <Button type="danger"
-                    onClick={async e => {
+                    onClick={async () => {
                       await handleStop(selectedRows);
                       action.reload();
                     }}
@@ -187,7 +187,7 @@ const roleManage = () => {
             </Button>
           ),
           selectedRows && selectedRows.length > 0 && (
-            <Button onClick={async e => {
+            <Button onClick={async () => {
                       await handleReset(selectedRows);
                       action.reload();
                     }}

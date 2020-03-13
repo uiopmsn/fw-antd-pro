@@ -84,11 +84,11 @@ request.interceptors.response.use(async (response) => {
   if(data && data.code){
     //需要登录
     if(data.code === 0){
-      window.g_app._store.dispatch({
-        type: 'login/logout',
-      });
       notification.error({
         message: '未登录或登录已过期，请重新登录。',
+      });
+      window.g_app._store.dispatch({
+        type: 'login/logout',
       });
       return;
     }
@@ -104,7 +104,7 @@ request.interceptors.response.use(async (response) => {
       notification.error({
         message: data.msg,
       });
-      return;
+      //return;
     }
   }
 
